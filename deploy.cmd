@@ -5,3 +5,5 @@ REM npm install -g grunt-cli bower yo generator-karma generator-angular
 REM To run on Azure run this
 npm install -g grunt-cli
 grunt build
+
+xcopy %DEPLOYMENT_SOURCE%/dist %DEPLOYMENT_TARGET% /Y
