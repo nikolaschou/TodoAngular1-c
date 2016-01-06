@@ -112,11 +112,11 @@ IF EXIST "%DEPLOYMENT_SOURCE%\bower.json" (
 
 
 :: Install and run grunt
-IF EXIST "%DEPLOYMENT_SOURCE%\bower.json" (
+IF EXIST "%DEPLOYMENT_SOURCE%\Gruntfile.json" (
   pushd "%DEPLOYMENT_SOURCE%"
   call :ExecuteCmd !NPM_CMD! install --production karma phantomjs jasmine-core grunt-cli
   IF !ERRORLEVEL! NEQ 0 goto error
-  call :ExecuteCmd  ./node_modules/.bin/grunt --no-color
+  call :ExecuteCmd  ./node_modules/.bin/grunt --no-color build
   IF !ERRORLEVEL! NEQ 0 goto error
   popd
 )
