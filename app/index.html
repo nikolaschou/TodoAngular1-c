@@ -13,6 +13,7 @@
     <!-- endbuild -->
     <!-- build:css(.tmp) styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/todolist.css">
     <!-- endbuild -->
   </head>
   <body ng-app="todoAngular1CApp">
@@ -42,6 +43,7 @@
               <li class="active"><a href="#/">Home</a></li>
               <li><a ng-href="#/about">About</a></li>
               <li><a ng-href="#/">Contact</a></li>
+              <li><a ng-href="#/todolist">Todo list</a></li>
             </ul>
           </div>
         </div>
@@ -54,7 +56,7 @@
 
     <div class="footer">
       <div class="container">
-        <p><span class="glyphicon glyphicon-heart"></span> from the Yeoman team</p>
+        <p>Reference architecture created by Nikola Schou</p>
       </div>
     </div>
 
@@ -89,6 +91,7 @@
         <script src="scripts/app.js"></script>
         <script src="scripts/controllers/main.js"></script>
         <script src="scripts/controllers/about.js"></script>
+    <script src="scripts/controllers/todolist.js"></script>
         <!-- endbuild -->
 </body>
 </html>

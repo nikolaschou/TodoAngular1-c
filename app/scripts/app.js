@@ -30,6 +30,11 @@ angular
         controller: 'AboutCtrl',
         controllerAs: 'about'
       })
+      .when('/todolist', {
+        templateUrl: 'views/todolist.html',
+        controller: 'TodolistCtrl',
+        controllerAs: 'todolist'
+      })
       .otherwise({
         redirectTo: '/'
       });
