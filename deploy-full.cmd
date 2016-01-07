@@ -86,24 +86,48 @@ goto :EOF
 :: ----------
 
 :Deployment
-echo Handling node.js deployment.
 
-:: 1. KuduSync
+echo Handling node.js grunt deployment.
+
+:: Select node version
+call :SelectNodeVersion
+
+:: Install npm packages
+IF EXIST "%DEPLOYMENT_SOURCE%\package.json" (
+  pushd "%DEPLOYMENT_SOURCE%"
+  call :ExecuteCmd !NPM_CMD! install --production
+  IF !ERRORLEVEL! NEQ 0 goto error
+  popd
+)
+
+:: Install bower packages
+IF EXIST "%DEPLOYMENT_SOURCE%\bower.json" (
+  pushd "%DEPLOYMENT_SOURCE%"
+  call :ExecuteCmd !NPM_CMD! install --production bower
+  IF !ERRORLEVEL! NEQ 0 goto error
+  call :ExecuteCmd ./node_modules/.bin/bower install
+  IF !ERRORLEVEL! NEQ 0 goto error
+  popd
+)
+
+
+:: Install and run grunt
+IF EXIST "%DEPLOYMENT_SOURCE%\Gruntfile.json" (
+  pushd "%DEPLOYMENT_SOURCE%"
+  call :ExecuteCmd !NPM_CMD! install --production karma phantomjs jasmine-core grunt-cli
+  IF !ERRORLEVEL! NEQ 0 goto error
+  call :ExecuteCmd  ./node_modules/.bin/grunt --no-color build
+  IF !ERRORLEVEL! NEQ 0 goto error
+  popd
+)
+
+
+:: KuduSync
 IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
   call :ExecuteCmd "%KUDU_SYNC_CMD%" -v 50 -f "%DEPLOYMENT_SOURCE%/dist" -t "%DEPLOYMENT_TARGET%" -n "%NEXT_MANIFEST_PATH%" -p "%PREVIOUS_MANIFEST_PATH%" -i ".git;.hg;.deployment;deploy.cmd"
   IF !ERRORLEVEL! NEQ 0 goto error
 )
 
-:: 2. Select node version
-call :SelectNodeVersion
-
-:: 3. Install npm packages
-REM IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
-REM   pushd "%DEPLOYMENT_TARGET%"
-  REM call :ExecuteCmd !NPM_CMD! install --production
-  REM IF !ERRORLEVEL! NEQ 0 goto error
-  REM popd
-REM )
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -117,6 +141,7 @@ goto end
 :ExecuteCmd
 setlocal
 set _CMD_=%*
+echo Running %_CMD_%
 call %_CMD_%
 if "%ERRORLEVEL%" NEQ "0" echo Failed exitCode=%ERRORLEVEL%, command=%_CMD_%
 exit /b %ERRORLEVEL%
